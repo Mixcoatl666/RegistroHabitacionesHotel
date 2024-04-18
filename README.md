@@ -45,16 +45,16 @@ Que no haya daños, que las sabanas y toallas estén completas y sin daño, que 
 ~~~
 id (ObjectId)
 piso (Number)
-numero (Number)
-tipo (String: "economico", "estandar", "premium")
-estado (String: "ocupada", "revisando", "lista")
+numeroHabitacion (Number)
+nombreMucama
+// caracteristicas
 ~~~
 
 ## Revisión
 ~~~
 id (ObjectId)
-numeroHabitacion (ObjectId)
-nombreMucama (ObjectId)
+numeroHabitacion (Sting)
+nombreMucama (String)
 fecha (Date: Fecha en que se reviso con la hora incluida)
 itemsRevisados ([{
     nombre: (String),
@@ -62,7 +62,6 @@ itemsRevisados ([{
     comentario: (String)
 }])
 estadoGeneral: (String)
-notificacion(Boolean)
 ~~~
 
 ## Empleado (mucama, recepcionista)
@@ -72,4 +71,8 @@ nombre (String)
 email (String)
 contrasenia (String)
 rol (String)
+token (String)
 ~~~
+
+
+Filtros de habitaciones para buscar ciertas caracteristicas decidiendo que filtros a nivel de jefe ex
