@@ -103,8 +103,10 @@ export const loginEmpleado = async (req, res) => {
         if (!correctPassword) {
             return res.status(400).json({ message: "Contraseña incorrecta" });
         }
+        const rol = empleado.rol;
+        const nombre = empleado.nombre;
         const token = generarJWT(empleado.id, empleado.nombre, empleado.rol);
-        res.status(200).json({ token });
+        res.status(200).json({ nombre, rol, token });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

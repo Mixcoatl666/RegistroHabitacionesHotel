@@ -1,0 +1,94 @@
+body {
+    font-family: "Lato", sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4; /* Fondo claro para el cuerpo */
+}
+
+.sidenav {
+    height: 100%;
+    background-color: #000;
+    overflow-x: hidden;
+    padding-top: 20px;
+    color: #fff; /* Texto blanco en el menú lateral */
+}
+
+.main {
+    padding: 0px 10px;
+}
+
+.login-main-text {
+    padding: 60px;
+    margin-top: 20%;
+    text-align: center; /* Alinear texto al centro */
+    color: #fff; /* Texto blanco para contraste */
+}
+
+.login-main-text h2 {
+    font-weight: 300;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    border: 1px solid #ccc; /* Borde sutil para los inputs */
+}
+
+.btn-black {
+    width: 100%;
+    padding: 10px;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+@media screen and (max-width: 768px) {
+    .main {
+        margin-left: 0;
+    }
+
+    .sidenav {
+        position: relative;
+        width: 100%; /* Ajuste para móviles */
+        height: auto;
+        padding: 20px;
+    }
+
+    .login-form {
+        margin-top: 20%; /* Margen superior para el formulario */
+    }
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+}
+
+@media screen and (max-width: 450px) {
+    .login-form {
+        margin-top: 10%; /* Ajuste para vistas más estrechas */
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .main {
+        margin-left: 40%; /* Empuja el contenido principal a la derecha */
+    }
+
+    .sidenav {
+        width: 40%; /* Tamaño del sidebar */
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+    }
+
+    .login-form {
+        margin-top: 80%; /* Ajuste vertical para centrar el formulario */
+    }
+}

@@ -1,12 +1,15 @@
 import express from 'express';
-import { getAllHabitaciones, getHabitacion, createHabitacion, updateHabitacion, deleteHabitacion } from '../controllers/habitacionController.js';
+import { crearHabitacion, actualizarHabitacion, obtenerHabitaciones } from '../controllers/habitacionController.js';
 
 const router = express.Router();
 
-router.get('/', getAllHabitaciones);
-router.get('/:id', getHabitacion);
-router.post('/', createHabitacion);
-router.put('/:id', updateHabitacion);
-router.delete('/:id', deleteHabitacion);
+// Ruta para crear una nueva habitación
+router.post('/', crearHabitacion);
+
+// Ruta para actualizar una habitación existente
+router.put('/:id', actualizarHabitacion);
+
+// Ruta para obtener habitaciones con filtros
+router.get('/', obtenerHabitaciones);
 
 export default router;

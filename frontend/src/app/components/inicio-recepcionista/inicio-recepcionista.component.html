@@ -1,0 +1,89 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark border-bottom border-body" data-bs-theme="dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Bienvenido/a {{ nombre }}</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#" (click)="logOut()">Cerrar Sesión</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+</nav>
+
+<ul class="nav nav-tabs" role="tablist">
+  <li class="nav-item" role="presentation">
+    <a class="nav-link active" data-bs-toggle="tab" href="#revisarHabitaciones" aria-selected="true" role="tab" tabindex="-1">Revisar Habitaciones</a>
+  </li>
+  <li class="nav-item" role="presentation">
+    <a class="nav-link active" data-bs-toggle="tab" href="#iniciarRevision" aria-selected="false" role="tab" tabindex="-2">Revisar Habitaciones</a>
+  </li>
+  <li class="nav-item" role="presentation">
+    <a class="nav-link" data-bs-toggle="tab" href="#crearHabitaciones" aria-selected="false" role="tab">Crear Habitación</a>
+  </li>
+</ul>
+
+<div id="myTabContent" class="tab-content">
+  <div class="tab-pane fade active show" id="revisarHabitaciones" role="tabpanel">
+    <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit.</p>
+  </div>
+
+  <div class="tab-pane fade" id="iniciarRevision" role="tabpanel">
+    <p>Cola truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit.</p>
+  </div>
+
+  <div class="tab-pane fade" id="crearHabitaciones" role="tabpanel">
+    <div id="crear" class="container tab-pane active"><br>
+      <!-- Crear Habitación - HTML del Componente -->
+      <h3>Crear Nueva Habitación</h3>
+      <form (ngSubmit)="crearHabitacion()">
+        <div class="form-group">
+            <label for="numero">Número de Habitación</label>
+            <input type="number" class="form-control" id="numero" [(ngModel)]="habitacion.numeroHabitacion" name="numero" required>
+        </div>
+        <div class="form-group">
+            <label for="piso">Piso</label>
+            <input type="number" class="form-control" id="piso" [(ngModel)]="habitacion.piso" name="piso" required>
+        </div>
+          <div class="form-group">
+              <label for="estado">Estado</label>
+              <select class="form-control" id="estado" [(ngModel)]="habitacion.estadoHabitacion" name="estado">
+                <option value="libre">Libre</option>
+                <option value="ocupada">Ocupada</option>
+                <option value="revisando">Revisando</option>
+              </select>
+          </div>
+          <div class="form-group">
+              <label for="nombreMucama">Nombre de Mucama</label>
+              <input type="text" class="form-control" id="nombreMucama" [(ngModel)]="habitacion.nombreMucama" name="nombreMucama">
+          </div>
+          <div class="form-group">
+              <label for="clienteHospedado">Cliente Hospedado</label>
+              <input type="text" class="form-control" id="clienteHospedado" [(ngModel)]="habitacion.clienteHospedado" name="clienteHospedado">
+          </div>
+          <div>
+            <h4>Sábanas</h4>
+            <input type="text" [(ngModel)]="habitacion.caracteristicas.sabanas.estado" name="estadoSabanas" placeholder="Estado de las Sábanas">
+            <input type="number" [(ngModel)]="habitacion.caracteristicas.sabanas.cantidad" name="cantidadSabanas" placeholder="Cantidad de Sábanas">
+          </div>
+          <div>
+            <h4>Toallas</h4>
+            <input type="text" [(ngModel)]="habitacion.caracteristicas.toallas.estado" name="estadoToallas" placeholder="Estado de las Toallas">
+            <input type="number" [(ngModel)]="habitacion.caracteristicas.toallas.cantidad" name="cantidadToallas" placeholder="Cantidad de Toallas">
+          </div>
+          <div>
+            <h4>Frigobar</h4>
+            <div *ngFor="let item of habitacion.caracteristicas.frigobar; let i = index">
+              <input type="text" [(ngModel)]="item.item" name="item{{i}}" placeholder="Item">
+              <input type="number" [(ngModel)]="item.cantidad" name="cantidad{{i}}" placeholder="Cantidad">
+            </div>
+            <button type="button" class="btn btn-secondary" (click)="agregarItemFrigobar()">Agregar Item</button>
+          </div>
+          <button type="submit" class="btn btn-primary">Crear Habitación</button>
+      </form>
+    </div>
+  </div>
+</div>

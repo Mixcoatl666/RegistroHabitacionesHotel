@@ -1,32 +1,18 @@
 import mongoose from 'mongoose';
 
-const revisonEsquema = new mongoose.Schema({
-    numeroHabitacion: {
-        type: Number,  // Asumiendo que el número de habitación es un número único
-        required: true
-    },
-    nombreMucama: {
-        type: String,  // Usar el nombre directo de la mucama
-        required: true
-    },
-    fecha: {
-        type: Date,
-        default: Date.now
-    },
+const revisionEsquema = new mongoose.Schema({
+    habitacionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Habitacion', required: true },
+    nombreMucama: { type: String, required: true },
+    fecha: { type: Date, default: Date.now },
     itemsRevisados: [{
         nombre: { type: String, required: true },
+        cantidadEncontrada: { type: Number, default: 0 },
+        cantidadTotal: { type: Number, required: true },
         estado: { type: String, enum: ['excelente', 'regular', 'malo', 'no encontrado'], required: true },
-        comentario: { type: String }
+        comentario: { type: String, default: '' }
     }],
-    estadoGeneral: {
-        type: String,
-        required: true
-    },
-    notificacion: {
-        type: Boolean,
-        required: true
-    }
+    estadoGeneral: { type: String, required: true },
 });
 
-const Revision = mongoose.model("Revision", revisonEsquema);
+const Revision = mongoose.model("Revision", revisionEsquema);
 export default Revision;

@@ -2,11 +2,25 @@ import mongoose from 'mongoose';
 
 const habitacionSchema = new mongoose.Schema({
     piso: { type: Number, required: true },
-    numero: { type: Number, required: true, unique: true },
-    tipo: { type: String, enum: ['economico', 'estandar', 'premium'], required: true },
-    estado: { type: String, enum: ['ocupada', 'revisando', 'lista'], required: true }
+    numeroHabitacion: { type: Number, required: true },
+    nombreMucama: { type: String, required: true },
+    clienteHospedado: { type: String, required: false },
+    caracteristicas: {
+        sabanas: {
+            estado: { type: String, enum: ['excelente', 'regular', 'malo'], required: true },
+            cantidad: { type: Number, required: true }
+        },
+        toallas: {
+            estado: { type: String, enum: ['excelente', 'regular', 'malo'], required: true },
+            cantidad: { type: Number, required: true }
+        },
+        frigobar: [{
+            item: { type: String, required: true },
+            cantidad: { type: Number, required: true }
+        }]
+    },
+    estadoHabitacion: { type: String, enum: ['libre', 'ocupada', 'revisando'], required: true }
 });
 
 const Habitacion = mongoose.model('Habitacion', habitacionSchema);
-
 export default Habitacion;
