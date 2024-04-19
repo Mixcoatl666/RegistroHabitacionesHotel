@@ -1,10 +1,11 @@
 // controllers/RevisionController.js
 import Revision from '../models/Revision.js';
+import Habitacion from '../models/Habitaciones.js'
 
 export const iniciarRevision = async (req, res) => {
     try {
         const { habitacionId } = req.params;
-        const habitacion = await Habitacion.findById(habitacionId);
+        const habitacion = await Habitacion.findOne({'_id':habitacionId});
         if (!habitacion) {
             return res.status(404).json({ message: "Habitación no encontrada" });
         }
