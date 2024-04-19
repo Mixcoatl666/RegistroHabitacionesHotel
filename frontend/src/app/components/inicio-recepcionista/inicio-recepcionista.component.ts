@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { HabitacionesService } from '../../services/habitacion.service';
 import { ToastrService } from 'ngx-toastr';
+import { RevisionService } from '../../services/revision.service';
 
 @Component({
   selector: 'app-inicio-recepcionista',
@@ -26,17 +27,27 @@ export class InicioRecepcionistaComponent implements OnInit {
 
   habitaciones: any[] = [];
   filtros: any = {};
+  revisiones: any[] = [];
+  nombreMucama: string = '';
+  fechaInicio!: Date;
+  fechaFin!: Date;
 
   constructor(
     private authService: AuthService,
     private habitacionesService: HabitacionesService,
+    private revisionService: RevisionService,
     private toastr: ToastrService
-  ) {}
+  ) 
+  {
+    this.fechaInicio = new Date();
+    this.fechaFin = new Date();
+  }
 
   ngOnInit() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
     this.nombre = currentUser.nombre;
     this.buscarHabitaciones();
+    this.cargarRevisiones();
   }
 
   logOut() {
@@ -92,4 +103,55 @@ export class InicioRecepcionistaComponent implements OnInit {
     this.buscarHabitaciones();
     this.toastr.info('Filtros limpiados, mostrando todas las habitaciones.');
   }
+  
+  cargarRevisiones() {
+    this.revisionService.filtrarRevisiones().subscribe({
+      next: (data) => {
+        this.revisiones = data;
+        if (!data.length) {
+          this.toastr.info('No se encontraron revisiones.');
+        }
+      },
+      error: (error) => {
+        console.error('Error al obtener revisiones:', error);
+        this.toastr.error('Error al cargar revisiones: ' + error.message);
+      }
+    });
+  }
+  
+  aplicarFiltros() {
+    if ((this.fechaInicio && this.fechaInicio instanceof Date) && (this.fechaFin && this.fechaFin instanceof Date)) {
+      this.revisionService.filtrarRevisiones(this.nombreMucama, this.fechaInicio, this.fechaFin).subscribe({
+        next: (data) => {
+          this.revisiones = data;
+          if (!data.length) {
+            this.toastr.error('No se encontraron revisiones con los filtros aplicados.');
+          }
+        },
+        error: (error) => {
+          console.error('Error al filtrar revisiones:', error);
+          this.toastr.error('Error al filtrar revisiones: ' + error.message);
+        }
+      });
+    } else {
+      this.toastr.error('Las fechas ingresadas no son válidas.');
+    }
+  }
+  
+  limpiarFiltrosRevision() {
+    this.nombreMucama = '';
+    //this.fechaInicio = yyyy-MM-dd;
+    //this.fechaFin = Date:'yyyy-MM-dd';
+    this.cargarRevisiones();  // Recargar todas las revisiones sin filtros
+  }
+  
+  onFechaInicioChange(event: any) {
+    this.fechaInicio = new Date(event.target.value);
+    console.log(this.fechaInicio); // Verifica que la fecha sea válida
+  }
+  
+  onFechaFinChange(event: any) {
+    this.fechaFin = new Date(event.target.value);
+    console.log(this.fechaFin); // Verifica que la fecha sea válida
+  }  
 }

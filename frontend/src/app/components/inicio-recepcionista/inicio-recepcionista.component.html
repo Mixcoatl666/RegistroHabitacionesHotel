@@ -20,7 +20,7 @@
       <a class="nav-link active" id="revisar-tab" data-bs-toggle="tab" href="#revisarHabitaciones" role="tab">Revisar Habitaciones</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" id="revision-tab" data-bs-toggle="tab" href="#iniciarRevision" role="tab">Admin Habitaciones</a>
+      <a class="nav-link" id="revision-tab" data-bs-toggle="tab" href="#historialRevisiones" role="tab">Historial Revisiones</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" id="crear-tab" data-bs-toggle="tab" href="#crearHabitaciones" role="tab">Crear Habitación</a>
@@ -70,8 +70,39 @@
       </table>
     </div>
 
-    <div class="tab-pane fade" id="iniciarRevision" role="tabpanel">
-      <p class="mt-3">Texto de descripción para Iniciar Revisión.</p>
+    <div class="tab-pane fade" id="historialRevisiones" role="tabpanel">
+      <!-- src/app/components/recepcionista/recepcionista.component.html -->
+      <div class="container">
+        <h2>Panel de Recepcionista</h2>
+        <div class="filters">
+          <input type="text" [(ngModel)]="nombreMucama" placeholder="Nombre de Mucama" class="form-control">
+          <!-- inicio-recepcionista.component.html -->
+
+          <input type="date" (change)="onFechaInicioChange($event)" [value]="fechaInicio | date:'yyyy-MM-dd'">
+          <input type="date" (change)="onFechaFinChange($event)" [value]="fechaFin | date:'yyyy-MM-dd'">
+          <button (click)="cargarRevisiones()">Filtrar Revisiones</button>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Número de Habitación</th>
+                <th>Piso</th>
+                <th>Estado General</th>
+                <th>Fecha</th>
+                <th>Detalle</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let revision of revisiones">
+                <td>{{ revision.numeroHabitacion }}</td>
+                <td>{{ revision.pisoHabitacion }}</td>
+                <td>{{ revision.estadoGeneral }}</td>
+                <td>{{ revision.fecha | date: 'mediumDate' }}</td>
+                <td><button class="btn btn-info">Ver Detalles</button></td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
     </div>
 
     <div class="tab-pane fade" id="crearHabitaciones" role="tabpanel">
