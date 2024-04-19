@@ -7,14 +7,14 @@ body {
 
 .sidenav {
     height: 100%;
-    background-color: #000;
+    background-color: #222222;
     overflow-x: hidden;
     padding-top: 20px;
     color: #fff; /* Texto blanco en el menú lateral */
 }
 
 .main {
-    padding: 0px 10px;
+    padding: 0px 40px;
 }
 
 .login-main-text {
@@ -30,7 +30,7 @@ body {
 
 .form-control {
     width: 100%;
-    padding: 8px;
+    padding: 5px;
     margin-bottom: 10px;
     border-radius: 4px;
     box-sizing: border-box;
@@ -40,7 +40,7 @@ body {
 .btn-black {
     width: 100%;
     padding: 10px;
-    background-color: #000;
+    background-color: #f200ff;
     color: #fff;
     border: none;
     border-radius: 4px;

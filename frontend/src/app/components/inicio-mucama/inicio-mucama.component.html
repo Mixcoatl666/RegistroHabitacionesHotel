@@ -1,15 +1,75 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark border-bottom border-body" data-bs-theme="dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Bienvenido/a {{ nombre }}</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#" (click)="logOut()">Cerrar Sesión</a>
-            </li>
-          </ul>
+<!-- Navbar Component -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Bienvenido/a {{ nombre }}</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="#" (click)="logOut()">Cerrar Sesión</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- List of Revisions -->
+<div class="container mt-3">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Listado de Revisiones</h2>
+      <div *ngFor="let revision of revisiones; let i = index" class="card my-2">
+        <div class="card-body">
+          <h5 class="card-title">Habitación {{ revision.numeroHabitacion }}</h5>
+          <p class="card-text">Estado actual: {{ revision.estadoGeneral }}</p>
+          <button class="btn btn-primary" (click)="openModal(revision)">Revisar Habitación</button>
         </div>
       </div>
-</nav>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para la revisión -->
+<div class="modal fade" id="revisionModal" tabindex="-1" aria-labelledby="revisionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="revisionModalLabel">Revisión de Habitación {{ selectedRevision?.numeroHabitacion }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Fecha de registro: {{ selectedRevision?.fecha | date: 'medium' }}</p> <!-- Formateo de fecha -->
+        <form (ngSubmit)="submitRevision()" [ngClass]="{'disabled-form': selectedRevision?.estadoGeneral === 'Completada'}">
+          <fieldset [disabled]="selectedRevision?.estadoGeneral === 'Completada'">
+            <div *ngFor="let item of selectedRevision?.itemsRevisados; let idx = index">
+              <div class="mb-3">
+                <label for="{{ 'item-' + idx }}" class="form-label">{{ item.nombre }}</label>
+                <p class="text-muted">Cantidad Total: {{ item.cantidadTotal }}</p>
+                <input type="number" class="form-control" id="{{ 'item-' + idx }}" [(ngModel)]="item.cantidadEncontrada" name="cantidad{{ idx }}">
+                <select class="form-select mt-2" [(ngModel)]="item.estado" name="estado{{ idx }}">
+                  <option value="excelente">Excelente</option>
+                  <option value="regular">Regular</option>
+                  <option value="malo">Malo</option>
+                  <option value="no encontrado">No encontrado</option>
+                </select>
+                <input type="text" class="form-control mt-2" [(ngModel)]="item.comentario" placeholder="Comentario" name="comentario{{ idx }}">
+              </div>
+            </div>
+            <h4 class="mt-4 mb-2">Items del Frigobar</h4>
+            <div *ngFor="let frigo of selectedRevision?.frigobarItems; let idx = index">
+              <div class="mb-3">
+                <label for="{{ 'frigo-' + idx }}" class="form-label">{{ frigo.item }}</label>
+                <p class="text-muted">Cantidad Total: {{ frigo.cantidadTotal }}</p>
+                <input type="number" class="form-control" id="{{ 'frigo-' + idx }}" [(ngModel)]="frigo.cantidadEncontrada" name="frigoCantidad{{ idx }}">
+                <input type="text" class="form-control mt-2" [(ngModel)]="frigo.comentario" placeholder="Comentario" name="frigoComentario{{ idx }}">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-success" *ngIf="selectedRevision?.estadoGeneral !== 'Completada'">Finalizar Revisión</button>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

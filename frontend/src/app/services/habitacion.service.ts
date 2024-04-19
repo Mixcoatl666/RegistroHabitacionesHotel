@@ -17,7 +17,7 @@ export class HabitacionesService {
       map(response => response.data),
       catchError(error => {
         console.error('Error en la creación de habitación:', error.response);
-        throw error; // Puedes manejarlo o re-lanzar el error según lo necesites
+        throw error;
       })
     );
   }

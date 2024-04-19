@@ -1,53 +1,43 @@
-// controllers/RevisionController.js
 import Revision from '../models/Revision.js';
-import Habitacion from '../models/Habitaciones.js'
+import Habitacion from '../models/Habitaciones.js'; // Asegúrate que el nombre del modelo es correcto
 
 export const iniciarRevision = async (req, res) => {
     try {
         const { habitacionId } = req.params;
-        const habitacion = await Habitacion.findOne({'_id':habitacionId});
+        const habitacion = await Habitacion.findById(habitacionId);
         if (!habitacion) {
             return res.status(404).json({ message: "Habitación no encontrada" });
         }
 
-        const itemsRevisados = [];
-        if (habitacion.caracteristicas.sabanas) {
-            itemsRevisados.push({
-                nombre: 'Sabanas',
-                cantidadTotal: habitacion.caracteristicas.sabanas.cantidad,
-                estado: habitacion.caracteristicas.sabanas.estado,
-                comentario: ''
-            });
-        }
-        if (habitacion.caracteristicas.toallas) {
-            itemsRevisados.push({
-                nombre: 'Toallas',
-                cantidadTotal: habitacion.caracteristicas.toallas.cantidad,
-                estado: habitacion.caracteristicas.toallas.estado,
-                comentario: ''
-            });
-        }
-        habitacion.caracteristicas.frigobar.forEach(item => {
-            itemsRevisados.push({
-                nombre: item.item,
-                cantidadTotal: item.cantidad,
-                estado: 'no encontrado',
-                comentario: ''
-            });
-        });
-
+        // Crear la estructura de revisión según el nuevo modelo
         const nuevaRevision = new Revision({
-            habitacionId,
+            numeroHabitacion: habitacion.numeroHabitacion,
+            pisoHabitacion: habitacion.piso,
             nombreMucama: req.body.nombreMucama,
-            itemsRevisados,
-            estadoGeneral: 'Pendiente',
-            notificacion: false
+            itemsRevisados: [
+                {
+                    nombre: 'Sabanas',
+                    cantidadTotal: habitacion.caracteristicas.sabanas.cantidad,
+                    estado: 'no encontrado', // Estado inicial
+                },
+                {
+                    nombre: 'Toallas',
+                    cantidadTotal: habitacion.caracteristicas.toallas.cantidad,
+                    estado: 'no encontrado', // Estado inicial
+                }
+            ],
+            frigobarItems: habitacion.caracteristicas.frigobar.map(item => ({
+                item: item.item,
+                cantidadTotal: item.cantidad,
+                estado: 'no encontrado' // Estado inicial
+            })),
+            estadoGeneral: 'Pendiente'
         });
 
-        const revisionGuardada = await nuevaRevision.save();
-        res.status(201).json(revisionGuardada);
+        await nuevaRevision.save();
+        res.status(201).json(nuevaRevision);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(400).json({ message: "Error iniciando la revisión: " + error.message });
     }
 };
 
@@ -56,41 +46,72 @@ export const finalizarRevision = async (req, res) => {
         const { revisionId } = req.params;
         const revision = await Revision.findById(revisionId);
         if (!revision) {
-            return res.status(404).json({ message: "Revisión no iniciada o no existe" });
+            return res.status(404).json({ message: "Revisión no encontrada" });
         }
 
-        const habitacion = await Habitacion.findById(revision.habitacionId);
+        // Buscar la habitación basada en el número de habitación y piso guardados en la revisión
+        const habitacion = await Habitacion.findOne({
+            numeroHabitacion: revision.numeroHabitacion,
+            piso: revision.pisoHabitacion
+        });
         if (!habitacion) {
             return res.status(404).json({ message: "Habitación no encontrada" });
         }
 
-        revision.itemsRevisados.forEach(itemRevisado => {
-            const itemHabitacion = habitacion.caracteristicas.frigobar.find(item => item.item === itemRevisado.nombre);
-            if (itemHabitacion) {
-                itemHabitacion.cantidad = itemRevisado.cantidadEncontrada;
-            } else {
-                if (itemRevisado.nombre === 'Sabanas') {
-                    habitacion.caracteristicas.sabanas.cantidad = itemRevisado.cantidadEncontrada;
-                    habitacion.caracteristicas.sabanas.estado = itemRevisado.estado;
-                } else if (itemRevisado.nombre === 'Toallas') {
-                    habitacion.caracteristicas.toallas.cantidad = itemRevisado.cantidadEncontrada;
-                    habitacion.caracteristicas.toallas.estado = itemRevisado.estado;
+        // Actualizar los items revisados y los del frigobar
+        revision.itemsRevisados.forEach(item => {
+            const data = req.body.itemsRevisados.find(i => i.nombre === item.nombre);
+            if (data) {
+                item.estado = data.estado;
+                item.cantidadEncontrada = data.cantidadEncontrada;
+                item.comentario = data.comentario;
+
+                // Actualizar habitación
+                if (item.nombre === 'Sabanas') {
+                    habitacion.caracteristicas.sabanas.estado = data.estado;
+                    habitacion.caracteristicas.sabanas.cantidad = data.cantidadEncontrada;
+                } else if (item.nombre === 'Toallas') {
+                    habitacion.caracteristicas.toallas.estado = data.estado;
+                    habitacion.caracteristicas.toallas.cantidad = data.cantidadEncontrada;
                 }
             }
         });
 
+        revision.frigobarItems.forEach(item => {
+            const data = req.body.frigobarItems.find(i => i.item === item.item);
+            if (data) {
+                item.cantidadEncontrada = data.cantidadEncontrada;
+                item.comentario = data.comentario;
+                const frigoItem = habitacion.caracteristicas.frigobar.find(frigo => frigo.item === item.item);
+                if (frigoItem) {
+                    frigoItem.cantidad = data.cantidadEncontrada;
+                }
+            }
+        });
+
+        revision.estadoGeneral = 'Completada'; // Marcar la revisión como completada
+        await revision.save();
+
+        habitacion.estadoHabitacion = 'libre'; // Cambiar el estado de la habitación a lista
+        habitacion.clienteHospedado = '';
         await habitacion.save();
 
-        habitacion.estado = 'lista';
-        await habitacion.save();
-
-        res.status(200).json({ message: "Revisión completada y habitación actualizada", habitacion });
+        res.status(200).json({ message: "Revisión finalizada y habitación actualizada", revision, habitacion });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: "Error finalizando la revisión: " + error.message });
     }
 };
 
-// Filtrar revisiones con múltiples criterios
+export const getRevisionesPorMucama = async (req, res) => {
+    try {
+        const { nombreMucama } = req.query;  // Obtiene el nombre de la mucama del query
+        const revisiones = await Revision.find({ nombreMucama: nombreMucama });
+        res.status(200).json(revisiones);
+    } catch (error) {
+        res.status(400).json({ message: "Error al obtener revisiones: " + error.message });
+    }
+};
+
 export const filtrarRevisiones = async (req, res) => {
     try {
         const { nombreMucama, fechaInicio, fechaFin } = req.query;
@@ -104,6 +125,6 @@ export const filtrarRevisiones = async (req, res) => {
         const revisiones = await Revision.find(filtro);
         res.status(200).json(revisiones);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(400).json({ message: "Error filtrando revisiones: " + error.message });
     }
 };
