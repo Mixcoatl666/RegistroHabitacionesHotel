@@ -23,6 +23,9 @@
       <a class="nav-link" id="revision-tab" data-bs-toggle="tab" href="#historialRevisiones" role="tab">Historial Revisiones</a>
     </li>
     <li class="nav-item">
+      <a class="nav-link" id="revision-tab" data-bs-toggle="tab" href="#registroEmpleado" role="tab">Registro Empleado</a>
+    </li>
+    <li class="nav-item">
       <a class="nav-link" id="crear-tab" data-bs-toggle="tab" href="#crearHabitaciones" role="tab">Crear Habitación</a>
     </li>
   </ul>
@@ -107,6 +110,40 @@
       </div>
     </div>
     </div>
+    <div class="tab-pane fade" id="registroEmpleado" role="tabpanel">
+      <div class="container mt-3">
+        <div class="card">
+          <div class="card-header">
+            <h3>Registro de Empleado</h3>
+          </div>
+          <div class="card-body">
+            <form (ngSubmit)="registrarEmpleado()">
+              <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="nombre" [(ngModel)]="empleado.nombre" name="nombre" required>
+              </div>
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" [(ngModel)]="empleado.email" name="email" required>
+              </div>
+              <div class="mb-3">
+                <label for="contrasenia" class="form-label">Contraseña</label>
+                <input type="password" class="form-control" id="contrasenia" [(ngModel)]="empleado.contrasenia" name="contrasenia" required>
+              </div>
+              <div class="mb-3">
+                <label for="rol" class="form-label">Rol</label>
+                <select class="form-control" id="rol" [(ngModel)]="empleado.rol" name="rol">
+                  <option value="recepcionista">Recepcionista</option>
+                  <option value="administrador">Administrador</option>
+                  <!-- Agregar más roles según sea necesario -->
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary">Registrar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>    
     <div class="tab-pane fade" id="crearHabitaciones" role="tabpanel">
       <div class="container mt-3">
         <div class="card">
@@ -170,5 +207,6 @@
           </div>
       </div>      
       </div>
+    </div>
     </div>
   </div>
