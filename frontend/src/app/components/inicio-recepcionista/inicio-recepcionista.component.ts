@@ -33,6 +33,13 @@ export class InicioRecepcionistaComponent implements OnInit {
   fechaInicio!: Date;
   fechaFin!: Date;
 
+  empleado: any = {
+    nombre: '',
+    email: '',
+    contrasenia: '',
+    rol: ''
+  };
+  
   constructor(
     private authService: AuthService,
     private habitacionesService: HabitacionesService,
@@ -105,6 +112,22 @@ export class InicioRecepcionistaComponent implements OnInit {
     this.buscarHabitaciones();
     this.toastr.info('Filtros limpiados, mostrando todas las habitaciones.');
   }
+  
+
+  // Asegúrate de marcar el método como `async`
+async registrarEmpleado() {
+  try {
+    // Espera la respuesta de la promesa usando await
+    await this.authService.registerEmpleado(this.empleado);
+    this.toastr.success('Empleado registrado con éxito');
+    // Limpiar el formulario después de registrar con éxito
+    this.empleado = { nombre: '', email: '', contrasenia: '', rol: '' };
+  } catch (error) {
+    // Manejar errores. Asegúrate de acceder a la propiedad correcta para el mensaje de error.
+    console.log('Algo salio mal')
+  }
+}
+
   
   cargarRevisiones() {
     this.revisionService.filtrarRevisiones().subscribe({

@@ -2,15 +2,19 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
-import { clienteAxios } from '../helpers/clienteAxios';
+import axios from 'axios';  // Asegúrate de importar axios si no tienes un clienteAxios listo.
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private clienteAxios = axios.create({
+    baseURL: 'http://localhost:4000/api',
+    headers: { 'Content-Type': 'application/json' }
+  });
   private currentUserSubject = new BehaviorSubject<any>(null);
 
-  constructor(private router:Router) {
+  constructor(private router: Router) {
     if (this.isLocalStorageSupported()) {
       this.loadUser();
     }
@@ -29,7 +33,7 @@ export class AuthService {
 
   async login(email: string, password: string) {
     try {
-      const response = await clienteAxios.post('http://localhost:4000/api/empleados/login', {
+      const response = await this.clienteAxios.post('/empleados/login', {
         email,
         contrasenia: password
       });
@@ -43,6 +47,15 @@ export class AuthService {
     } catch (error) {
       console.error('Error de autenticación', error);
       throw error;
+    }
+  }
+
+  async registerEmpleado(empleado: any): Promise<any> {
+    try {
+      const response = await this.clienteAxios.post('/empleados/register', empleado);
+      return response.data;  // Aquí se manejaría la respuesta del servidor.
+    } catch (error) {
+      console.error('Error al registrar el empleado', error);
     }
   }
 
@@ -62,7 +75,7 @@ export class AuthService {
     if (this.isLocalStorageSupported()) {
       localStorage.removeItem('currentUser');
       this.currentUserSubject.next(null);
-      this.router.navigate(['/login']); 
+      this.router.navigate(['/login']);
     }
   }
 }
