@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import axios from 'axios';
 import { Observable, catchError, from, map } from 'rxjs';
+import { clienteAxios } from '../helpers/clienteAxios';
 
 @Injectable({
   providedIn: 'root'
@@ -28,9 +29,11 @@ export class HabitacionesService {
     );
   }
 
-  actualizarHabitacion(id: string, habitacion: any): Observable<any> {
-    return from(axios.put(`${this.apiUrl}/${id}`, habitacion)).pipe(
+  async actualizarHabitacion(id: string){
+    const { data } = await clienteAxios.put('/'+id)
+    
+    /*return from(axios.put(`${this.apiUrl}/${id}`, habitacion)).pipe(
       map(response => response.data)
-    );
+    );*/
   }
 }

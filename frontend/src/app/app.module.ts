@@ -10,13 +10,15 @@ import { InicioMucamaComponent } from './components/inicio-mucama/inicio-mucama.
 import { InicioRecepcionistaComponent } from './components/inicio-recepcionista/inicio-recepcionista.component';
 import { IniciarSesionComponent } from './components/iniciar-sesion/iniciar-sesion.component';
 import { FormsModule } from '@angular/forms';
+import { EditHabitacionesComponent } from './components/edit-habitaciones/edit-habitaciones.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     InicioMucamaComponent,
     IniciarSesionComponent,
-    InicioRecepcionistaComponent
+    InicioRecepcionistaComponent,
+    EditHabitacionesComponent
   ],
   imports: [
     BrowserModule,
