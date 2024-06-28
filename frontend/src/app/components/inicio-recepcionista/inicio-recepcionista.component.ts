@@ -3,6 +3,7 @@ import { AuthService } from '../../services/auth.service';
 import { HabitacionesService } from '../../services/habitacion.service';
 import { ToastrService } from 'ngx-toastr';
 import { RevisionService } from '../../services/revision.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-inicio-recepcionista',
@@ -43,7 +44,8 @@ export class InicioRecepcionistaComponent implements OnInit {
     private authService: AuthService,
     private habitacionesService: HabitacionesService,
     private revisionService: RevisionService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router:Router
   ) 
   {
     this.fechaInicio = new Date();
@@ -177,4 +179,8 @@ async registrarEmpleado() {
     this.fechaFin = new Date(event.target.value);
     console.log(this.fechaFin); // Verifica que la fecha sea válida
   }  
+
+  editarRevision(id:string){
+    this.router.navigate(['edit/:'+id]);   
+  }
 }
